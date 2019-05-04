@@ -6,6 +6,41 @@ O nosso herói morreu em **batalha** e foi mandado para o reino dos mortos. A hi
 
 Estranhos glifos começam a aparecer na porta. Você reconhece alguns. Parece que a porta quer jogar jokenpô.
 
+## Charadas
+
+1 - Quatro irmãs estão em um quarto: Ana está lendo, Kátia está jogando xadrez, Taca está cozinhando. O que a quarta irmã está fazendo?
+R: Jogando xadrez com Kátia.
+
+2 - Um homem estava indo para a Bahia com suas n irmãs. Cada irmã carregava n caixas, cada caixa tinha n gatos, cada gato estava com n filhotes. Quantos estavam indo para a Bahia?
+R: 1+n + n^3 + n^4.
+
+3 - Você entra em uma sala escura. No quarto há uma estufa à gás, uma luminária de querosene e uma vela. Tem uma caixa de fósforo com um só fósforo em seu bolso. O que você acende primeiro.
+R: o fósforo
+
+4 - Um empresário comprou um cavalo de 10 dólares e vendeu por 20. Logo comprou o mesmo cavalo por 30 dólares e vendeu por 40.
+Qual é o lucro total do empresário nessas duas transações?
+R: 20 dólares
+
+5 - Um balão aerostático é levado por uma corrente de ar até o sul. Em que direção vão ondular as bandeiras da cesta?
+R: nenhuma
+
+6 - Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuízo do mercante?
+R: 80 moedas
+
+7 - Dois pais e dois filhos sentaram-se para comer ovos no café da manhã. Cada um comeu um ovo. Quantos ovos eles comeram no total?
+R: 3 ( outras alternativas 1, 3, 5)
+
+8 - Se 3 lenhadores derrubam 3 árvores a cada 3 horas, quanto tempo levarão 100 lenhadores para derrubarem 100 árvores?
+R: 3 horas
+
+9 - Você está diante de três portas. Na primeira há um assassino. Na segunda há um leão que não come há um ano. Na terceira há um incêndio. Qual porta é mais segura?
+R: 2
+
+10 - Há três baús, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rótulos estão trocados, porém. Você pode tirar uma moeda de um dos baús para identificar qual baú contém apenas moedas de ouro. De qual baú você retira a moeda?
+R: 50/50
+
+
+
 ## Storyline 2
 
 Seus tornozelos querem desistir. Há dias você vem andando pelo deserto. A fome e a sede já são personagens conhecidos.
