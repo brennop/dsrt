@@ -24,44 +24,80 @@
 #define ITL "\x1B[3m"
 #define UND "\x1B[4m"
 
+
+
+int input();
+int create();
+int mainGame();
+
+int riddle();
+int riddleInput();
+int jokenpo();
+int arrow();
+
+
+
+
+int main(){
+    srand(time(NULL));
+    int character = 0, opt = 0;
+
+
+    printf("\
+     .    _    +     .  ______   .          .     '      .\n\
+  (      /|\\      _   _|      \\___   .   +    '    .         *\n\
+    /\\  ||||| .  | | |   | |      |       .    '                    .    '\n\
+ __||||_|||||____| |_|_____________\\________________________________________\n\
+ . |||| |||||  /\\   _____      _____  . ______   _______  _______ _________\n\
+  . \\|`-'|||| ||||    __________       (. __  \\ ( -____ \\(  ____.)\\__ . __/ \n\
+     \\__ |||| ||||      .          .   | (  \\  )| (    \\/| (    )|   ) (  \n\
+  __    ||||`-'|||  .       .    ______|_|_. ) || (_____ | (____)| . | | ,\n\
+ .    . |||| ___/  ___________     .   |-|   | |(_____  )|     __)   | | \n\
+ _   ___|||||__  _           .    -    | | - ) |.  -  ) || (\\ (  .   | | .\n\
+      _ `---'    .   .    .   _   .   .| (__/  )/\\____) || ) \\ \\__ - | |\n\
+ _  ^      .  -    .    -    .       - (______/ \\_______)|/ . \\__/.  )_(\n\
+ ");
+    while(opt != 3){
+        printf("\n1 - Criar Personagem\n2 - Novo Jogo\n3 - Sair\n");
+
+        opt = input("", 3);
+        
+        if(opt == 1){
+            character = create();
+        }else if(opt == 2){
+            if(character == 0){
+                printf(BLD "Precisa criar um personagem primeiro!" RST);
+            }else{
+                mainGame(character);
+            }
+        }
+    }
+
+    return 0;
+}
+
 int input(char txt[], int opts){
     int chosen = 0;
     while(chosen > opts || chosen <= 0){
-        printf("\n");
-        printf("%s", txt);
-        printf("\n");
+        printf("%s: ", txt);
         scanf("%d", &chosen);
         printf("\n");
     }
     return chosen;
 }
 
-void gameOver();
-int riddle();
-int riddleInput();
-int jokenpo();
-int arrow();
-int charadas();
-
-void enter(){
-    char _enter = 0;
-    while(_enter != '\r' && _enter != '\n'){
-        _enter = getchar();
-    }  
-}
-
-unsigned int create(){
-    unsigned int character = 0, current_attr = 0 ;
+int create(){
+    int character = 0, current_attr = 0 ;
     printf("Criar personagem\n");
 
     // Raça: dois primeiros bits
     printf("Raça\n");
-    current_attr = input("1 - Humano | 2 - Anão | 3 - Elfo", 3);
+    current_attr = input("( Humano | Anão | Elfo )", 3);
     character += current_attr;
 
     // Alinhamento: bits 3 e 4 (shift 2)
     printf("Alinhamento\n");
-    current_attr = input("1 - Mal | 2 - Neutro | 3 - Bom", 3);
+    current_attr = input("( Mal | Neutro | Bom )", 3);
     character += current_attr * 4;
 
     // Profissão: bits 5 e 6 (shift 4)
@@ -69,18 +105,18 @@ unsigned int create(){
 
     // Se for bom
     if((character >> 2 & 3) == 3){
-        current_attr = input("1 - Guerreiro | 2 - Mago", 2);
+        current_attr = input("( Guerreiro | Mago )", 2);
     }else{
-        current_attr = input("1 - Guerreiro | 2 - Mago | 3 - Ladino", 3);
+        current_attr = input("( Guerreiro | Mago | Ladino )", 3);
     }
     character += current_attr * 16;
 
     // Meta: bits 7 e 8 (shift 6)
     printf("Meta\n");
     if((character >> 2 & 1) == 1){
-        current_attr = input("1 - Governar o reino | 2 - Ficar rico", 2);
+        current_attr = input("( Governar o reino | Ficar rico )", 2);
     }else{
-        current_attr = input("1 - Governar o reino | 2 - Ficar rico | 3 - Destruir o mal", 3);
+        current_attr = input("( Governar o reino | Ficar rico | Destruir o mal )", 3);
     }
     
     character += current_attr * 64;
@@ -90,9 +126,9 @@ unsigned int create(){
 
     // Se for ladino
     if((character >> 4 & 3) == 3){
-        current_attr = input("1 - Urbano | 2 - Rural", 2);
+        current_attr = input("( Urbano | Rural )", 2);
     }else{
-        current_attr = input("1 - Urbano | 2 - Rural | 3 - Tribal", 3);
+        current_attr = input("( Urbano | Rural | Tribal )", 3);
     }
     character += current_attr * 256;
 
@@ -101,23 +137,18 @@ unsigned int create(){
     
     // Se for anão
     if((character & 2) == 2){
-        current_attr = input("1 - Médio | 2 - Pequeno", 2) + 1;
+        current_attr = input("( Médio | Pequeno )", 2) + 1;
     }else{
-        current_attr = input("1 - Grande | 2 - Médio | 3 - Pequeno", 3);
+        current_attr = input("( Grande | Médio | Pequeno )", 3);
     }
     character += current_attr * 1024;
 
+    printf(BLD "Personagem criado!" RST);
     return character;
-
-
 }
 
-
-int main(){
+int mainGame(int character){
     int raca, alinhamento, profissao, meta, meio, porte;
-    unsigned int character = create();
-    printf("Personagem criado.\nPressione enter para começar.\n");
-    enter();
 
     raca = character & 3;
     alinhamento = character >> 2 & 3;
@@ -126,8 +157,9 @@ int main(){
     meio = character >> 8 & 3;
     porte = character >> 10 & 3;
 
-    int jar, door, oldMan, riddle1, riddle2;
+    int jar, door, oldMan;
     int hasKey = 0, doorPassed = 0, jokenpoPlayed = 0;
+    int r=0, riddle1=0, riddle2=0;
 
     // Introdução
     printf("Seus tornozelos querem desistir. Há dias você vem andando pelo deserto. A fome e a sede já são personagens conhecidos.\n\
@@ -201,6 +233,11 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
                 printf("\"Não adianta. Já estamos condenados.\"\n");
             }
         }else{
+            printf("O velho parece grato com o presente.\n");
+            printf("Em troca ele te entrega uma chave.\n");
+            printf(ITL "Uma chave dourada foi adicionada ao seu inventário.\n" RST);
+
+            hasKey = 1;
             jar = 0;
         }
         
@@ -253,7 +290,10 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
     printf("\n");
     printf("Rapidamente você desce os degraus e chega a uma sala retangular.\n");
     if(doorPassed == 2){
-        arrow();
+        if(arrow() == 0){
+            printf("Você começa a sentir o veneno correndo por todo o seu corpo. É o fim de sua jornada\n" BLD RED "GAME OVER!" RST);
+            return 0;
+        };
     }
 
     // Evento 5
@@ -267,7 +307,16 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
     printf(ITL "Para passar e receber o tesouro, você deve responder corretamente três charadas.\n" RST);
 
     for(int i = 0; i<3; i++){
-        int r = (rand() % 10) + 1;
+        while(r == riddle1 || r == riddle2){
+            r = (rand() % 10) + 1;
+        }
+
+        if(i==0){
+            riddle1 = r;
+        }else{
+            riddle2 = r;
+        }
+
         if(riddle(r) == 0){
             printf("O chão começa a tremer. O teto começa a desmoronar. É o fim de sua jornada\n" BLD RED "GAME OVER!" RST);
             return 0;
@@ -276,7 +325,6 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
         
     printf("A estátua se despedaça, e debaixo dela há um baú. Sua jornada chegou ao fim.\n");
     return 0;
-
 
 }
 
@@ -354,34 +402,34 @@ int riddle(int n){
     switch (n)
     {
         case 1:
-            printf("Quatro irmãs estão em um quarto: Ana está lendo, Kátia está jogando xadrez, Taca está cozinhando. O que a quarta irmã está fazendo?");
+            printf("Quatro irmãs estão em um quarto: Ana está lendo, Kátia está jogando xadrez, Taca está cozinhando. O que a quarta irmã está fazendo?\n");
             return riddleInput("( matando orcs | forjando uma espada | jogando xadrez )", 3);
         case 2:
-            printf("Um homem estava indo para a Bahia com suas 5 irmãs. Cada irmã carregava 5 caixas, cada caixa tinha 5 gatos, cada gato estava com 5 filhotes. Quantos estavam indo para a Bahia?");
+            printf("Um homem estava indo para a Bahia com suas 5 irmãs. Cada irmã carregava 5 caixas, cada caixa tinha 5 gatos, cada gato estava com 5 filhotes. Quantos estavam indo para a Bahia?\n");
             return riddleInput("( 756 | 781 |  Bahia? )", 1);
         case 3:
-            printf("Você entra em uma sala escura. No quarto há uma estufa à gás, uma luminária de querosene e uma vela. Há uma caixa de fósforo com um só fósforo em seu bolso. O que você acende primeiro.");
+            printf("Você entra em uma sala escura. No quarto há uma estufa à gás, uma luminária de querosene e uma vela. Há uma caixa de fósforo com um só fósforo em seu bolso. O que você acende primeiro.\n");
             return riddleInput("( luminária | vela | fósforo )", 3);
         case 4:
-            printf("Um empresário comprou um cavalo de 10 moedas e vendeu por 20. Logo comprou o mesmo cavalo por 30 moedas e vendeu por 40. Qual é o lucro total do empresário nessas duas transações?");
+            printf("Um empresário comprou um cavalo de 10 moedas e vendeu por 20. Logo comprou o mesmo cavalo por 30 moedas e vendeu por 40. Qual é o lucro total do empresário nessas duas transações?\n");
             return riddleInput("( 10 | 20 | 40 )", 2);
         case 5:
-            printf("Um balão aerostático é levado por uma corrente de ar até o sul. Em que direção vão ondular as bandeiras da cesta?");
+            printf("Um balão aerostático é levado por uma corrente de ar até o sul. Em que direção vão ondular as bandeiras da cesta?\n");
             return riddleInput("( sul | nenhuma | norte )", 2);
         case 6:
-            printf("Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuízo do mercante?");
+            printf("Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuízo do mercante?\n");
             return riddleInput("( 80 | 20 | 140 )", 1);
         case 7:
-            printf("Dois pais e dois filhos sentaram-se para comer ovos no café da manhã. Cada um comeu um ovo. Quantos ovos eles comeram no total?");
-            return riddleInput("( 1 | 3 | 5", 2);
+            printf("Dois pais e dois filhos sentaram-se para comer ovos no café da manhã. Cada um comeu um ovo. Quantos ovos eles comeram no total?\n");
+            return riddleInput("( 1 | 3 | 5 )", 2);
         case 8:
-            printf("Se 3 lenhadores derrubam 3 árvores a cada 3 horas, quanto tempo levarão 100 lenhadores para derrubarem 100 árvores?");
-            return riddleInput("( 100 | 3 | 300", 2);
+            printf("Se 3 lenhadores derrubam 3 árvores a cada 3 horas, quanto tempo levarão 100 lenhadores para derrubarem 100 árvores?\n");
+            return riddleInput("( 100 | 3 | 300 )", 2);
         case 9:
-            printf("Você está diante de três portas. Na primeira há um assassino. Na segunda há um leão que não come há um ano. Na terceira há um incêndio. Qual porta é mais segura?");
+            printf("Você está diante de três portas. Na primeira há um assassino. Na segunda há um leão que não come há um ano. Na terceira há um incêndio. Qual porta é mais segura?\n");
             return riddleInput("( assassino | leão | incêndio )", 2);
         case 10:
-            printf("Há três baús, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rótulos estão trocados, porém. Você pode tirar uma moeda de um dos baús para identificar qual baú contém apenas moedas de ouro. De qual baú você retira a moeda?");
+            printf("Há três baús, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rótulos estão trocados, porém. Você pode tirar uma moeda de um dos baús para identificar qual baú contém apenas moedas de ouro. De qual baú você retira a moeda?\n");
             return riddleInput("( só ouro | só prata | 50/50 )", 3);
     }
 }
