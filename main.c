@@ -1,31 +1,17 @@
 // ------------------------------------
 // 
-//  Teres Game - APC Turma D  - 2019.1
+//  DSRT Game - APC Turma D  - 2019.1
+//  Brenno Cordeiro - 180098632
 // 
-// -------------------------------------
+// ------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <locale.h>
 
-// terminal coloridinho
-#define RED "\x1B[31m"
-#define GRN "\x1B[32m"
-#define YEL "\x1B[33m"
-#define BLU "\x1B[34m"
-#define MAG "\x1B[35m"
-#define CYN "\x1B[36m"
-#define WHT "\x1B[37m"
-#define RST "\x1B[0m"
-
-// outros efeitos top
-#define BLD "\x1B[1m"
-#define ITL "\x1B[3m"
-#define UND "\x1B[4m"
-
-
-// prÃ³totipo de funÃ§Ãµes Ãºteis
+// prótotipo de funções úteis
 int input();
 int create();
 int mainGame();
@@ -33,14 +19,16 @@ int riddle();
 int riddleInput();
 int jokenpo();
 int arrow();
-void enter();
-
 
 int main(){
+    // faz os acentos funcionarem
+    setlocale(LC_ALL, "");
+
     // coloca a seed pro prng
     srand(time(NULL));
-    // declara e inicializa as variÃ¡veis
-    // personagem e opÃ§Ã£o no menu principal
+
+    // declara e inicializa as variáveis
+    // personagem e opção no menu principal
     int character = 0, opt = 0;
 
     // splash art
@@ -69,7 +57,7 @@ int main(){
             character = create();
         }else if(opt == 2){
             if(character == 0){
-                printf(BLD "Precisa criar um personagem primeiro!" RST);
+                printf("Precisa criar um personagem primeiro!");
             }else{
                 mainGame(character);
             }
@@ -80,7 +68,7 @@ int main(){
 }
 
 
-// FunÃ§Ã£o para pegar um input de opÃ§Ãµes
+// Função para pegar um input de opções
 int input(char txt[], int opts){
     int chosen = 0;
     while(chosen > opts || chosen <= 0){
@@ -92,15 +80,15 @@ int input(char txt[], int opts){
 }
 
 
-// FunÃ§Ã£o para criar o personagem
-// Retorna um inteiro, a cada dois bits Ã© um atributo
+// Função para criar o personagem
+// Retorna um inteiro, a cada dois bits é um atributo
 int create(){
     int character = 0, current_attr = 0 ;
     printf("Criar personagem\n");
 
-    // RaÃ§a: dois primeiros bits
-    printf("RaÃ§a\n");
-    current_attr = input("( Humano | AnÃ£o | Elfo )", 3);
+    // Raça: dois primeiros bits
+    printf("Raça\n");
+    current_attr = input("( Humano | Anão | Elfo )", 3);
     character += current_attr;
 
     // Alinhamento: bits 3 e 4 (shift 2)
@@ -108,10 +96,10 @@ int create(){
     current_attr = input("( Mal | Neutro | Bom )", 3);
     character += current_attr * 4;
 
-    // ProfissÃ£o: bits 5 e 6 (shift 4)
-    printf("ProfissÃ£o\n");
+    // Profissão: bits 5 e 6 (shift 4)
+    printf("Profissão\n");
 
-    // Se for bom, nÃ£o pode ser ladino
+    // Se for bom, não pode ser ladino
     if((character >> 2 & 3) == 3){
         current_attr = input("( Guerreiro | Mago )", 2);
     }else{
@@ -121,7 +109,7 @@ int create(){
 
     // Meta: bits 7 e 8 (shift 6)
     printf("Meta\n");
-    // Se for mal, nÃ£o pode destruir o mal
+    // Se for mal, não pode destruir o mal
     if((character >> 2 & 1) == 1){
         current_attr = input("( Governar o reino | Ficar rico )", 2);
     }else{
@@ -132,7 +120,7 @@ int create(){
     // Meio: bits 9 e 10 (shift 8)
     printf("Meio que vive\n");
 
-    // Se for ladino, nÃ£o pode ser tribal
+    // Se for ladino, não pode ser tribal
     if((character >> 4 & 3) == 3){
         current_attr = input("( Urbano | Rural )", 2);
     }else{
@@ -143,24 +131,24 @@ int create(){
     // Porte: bits 11 e 12 (shift 10)
     printf("Porte\n");
     
-    // Se for anÃ£o, nÃ£o pode ser grande
+    // Se for anão, não pode ser grande
     if((character & 2) == 2){
-        current_attr = input("( MÃ©dio | Pequeno )", 2) + 1;
+        current_attr = input("( Médio | Pequeno )", 2) + 1;
     }else{
-        current_attr = input("( Grande | MÃ©dio | Pequeno )", 3);
+        current_attr = input("( Grande | Médio | Pequeno )", 3);
     }
     character += current_attr * 1024;
 
-    printf(BLD "Personagem criado!" RST);
+    printf("Personagem criado!");
     return character;
 }
 
 // Jogo
 int mainGame(int character){
-    // Declara as variÃ¡veis do personagem
+    // Declara as variáveis do personagem
     int raca, alinhamento, profissao, meta, meio, porte;
 
-    // Transforma o inteiro character nas variÃ¡veis representantes
+    // Transforma o inteiro character nas variáveis representantes
     raca = character & 3;
     alinhamento = character >> 2 & 3;
     profissao = character >> 4 & 3;
@@ -168,34 +156,34 @@ int mainGame(int character){
     meio = character >> 8 & 3;
     porte = character >> 10 & 3;
 
-    // variÃ¡veis helpers para conduzir a narrativa
+    // variáveis helpers para conduzir a narrativa
     int jar, door, oldMan;
     int hasKey = 0, doorPassed = 0, jokenpoPlayed = 0;
     int r=0, riddle1=0, riddle2=0;
 
-    // IntroduÃ§Ã£o
-    printf("Seus tornozelos querem desistir. HÃ¡ dias vocÃª vem andando pelo deserto. A fome e a sede jÃ¡ sÃ£o personagens conhecidos.\n\
-ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e percebe hÃ¡ algo dentro.\n");
-    jar = input("( beber | lavar as mÃ£os | carregar a jarra )", 3);
+    // Introdução
+    printf("Seus tornozelos querem desistir. Há dias você vem andando pelo deserto. A fome e a sede já são personagens conhecidos.\n\
+Após mais alguns passos você encontra uma jarra. Você levanta a jarra e percebe há algo dentro.\n");
+    jar = input("( beber | lavar as mãos | carregar a jarra )", 3);
 
     if(jar == 1){
-        printf("O lÃ­quido comeÃ§a a ser derramado sobre a sua boca, e imediatamente vocÃª sente algo queimando em sua garganta. VocÃª para logo em seguida.\n");
+        printf("O líquido começa a ser derramado sobre a sua boca, e imediatamente você sente algo queimando em sua garganta. Você para logo em seguida.\n");
     }else if(jar == 2){
         if(profissao != 2){
-            printf("O lÃ­quido comeÃ§a a ser derramado sobre as suas mÃ£os, que comeÃ§am a arder. Apesar da dor vocÃª se sente mais forte.\n");
+            printf("O líquido começa a ser derramado sobre as suas mãos, que começam a arder. Apesar da dor você se sente mais forte.\n");
         }else{
-            printf("O lÃ­quido comeÃ§a a ser derramado sobre as suas mÃ£os. VocÃª sente a magia correndo de volta em suas veias.\n");
+            printf("O líquido começa a ser derramado sobre as suas mãos. Você sente a magia correndo de volta em suas veias.\n");
         }
     }else{
-        printf(ITL "Uma jarra cheia foi adicionada ao seu inventÃ¡rio.\n" RST);
+        printf("Uma jarra cheia foi adicionada ao seu inventário.\n");
     }
 
     // Evento 2 - Encontro com o velho
-    // Volta a esse evento se nÃ£o passar pela porta
+    // Volta a esse evento se não passar pela porta
     while(doorPassed == 0){
-        printf("VocÃª segue andando pelo deserto e avista uma figura. Ao se aproximar, percebe que Ã© um " BLU "velho" RST " Ã  beira da morte.\n");
+        printf("Você segue andando pelo deserto e avista uma figura. Ao se aproximar, percebe que é um velho à beira da morte.\n");
 
-        // Se for mal, pode saquear o velho, mas nÃ£o oferecer ajuda
+        // Se for mal, pode saquear o velho, mas não oferecer ajuda
         if(alinhamento == 1){
             oldMan = input("( saquear o velho | conversar com o velho )", 2);
         }else{
@@ -211,44 +199,44 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
         if(oldMan == 1){
             // Se for Ladino
             if(profissao == 3){
-                printf("NÃ£o hÃ¡ resistÃªncia quando se abaixa para olhar os bolsos do velho.\n");
-                printf(ITL "Uma chave dourada foi adicionada ao seu inventÃ¡rio.\n" RST);
+                printf("Não há resistência quando se abaixa para olhar os bolsos do velho.\n");
+                printf("Uma chave dourada foi adicionada ao seu inventário.\n");
                 hasKey = 1;
             }else{
-                printf("VocÃª vasculha os bolsos do velho procurando algo, mas nÃ£o hÃ¡ nada.\n");
+                printf("Você vasculha os bolsos do velho procurando algo, mas não há nada.\n");
             }
         }else if(oldMan == 2){ // Conversar
             // Ladino
             if(profissao == 3){
-                printf(ITL "\"VocÃª tem algo que possa me ajudar\?\"\n" RST);
+                printf("\"Você tem algo que possa me ajudar\?\"\n");
                 printf("O velho te entrega uma chave, sem dizer nada.\n");
-                printf(ITL "Uma chave dourada foi adicionada ao seu inventÃ¡rio.\n" RST);
+                printf("Uma chave dourada foi adicionada ao seu inventário.\n");
                 hasKey = 1;
             }  else{
                 if(jokenpoPlayed){
                     printf("\"Como eu passo da porta?\"\n");
-                    printf("\"O velho vira e diz para vocÃª\"\n");
-                    printf(ITL "\"Com paciÃªncia\"\n" RST);
+                    printf("\"O velho vira e diz para você\"\n");
+                    printf("\"Com paciência\"\n");
                 }else{
-                    printf("\"Quem Ã© vocÃª?\"\n");
+                    printf("\"Quem é você?\"\n");
                     printf("O velho olha para o horizonte e responde com dificuldade.\n");
-                    printf(ITL"\"Eu sou como vocÃª.\"\n"RST);
+                    printf("\"Eu sou como você.\"\n");
                 }
             }
         }else if(oldMan == 3){ // Ajuda
             if(jokenpoPlayed){
                 printf("\"O senhor precisa de ajuda?\"\n");
-                printf("O velho olha para vocÃª e responde:\n");
-                printf(ITL "\"Acho que quem precisa de ajuda Ã© vocÃª.\"\n" RST);
+                printf("O velho olha para você e responde:\n");
+                printf("\"Acho que quem precisa de ajuda é você.\"\n");
             }else{
                 printf("\"O senhor precisa de ajuda?\"\n");
                 printf("O velho olha para o horizonte e responde com dificuldade.\ns");
-                printf(ITL "\"NÃ£o adianta. JÃ¡ estamos condenados.\"\n" RST);
+                printf("\"Não adianta. Já estamos condenados.\"\n");
             }
         }else{
             printf("O velho parece grato com o presente.\n");
             printf("Em troca ele te entrega uma chave.\n");
-            printf(ITL "Uma chave dourada foi adicionada ao seu inventÃ¡rio.\n" RST);
+            printf("Uma chave dourada foi adicionada ao seu inventário.\n");
 
             hasKey = 1;
             jar = 0;
@@ -256,17 +244,17 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
         
         // Evento 3        
         printf("\n");
-        printf("VocÃª segue caminhando. Alguns metros a frente vocÃª parece identificar uma estrutura\n");
-        printf("Quando se aproxima, nota uma " YEL "porta de pedra" RST ".\n");
+        printf("Você segue caminhando. Alguns metros a frente você parece identificar uma estrutura\n");
+        printf("Quando se aproxima, nota uma porta de pedra.\n");
         
         // se for guerreiro, pode golpear a porta
         if(profissao == 1){
-            door = input("( bater na porta | pedir ajuda ao velho |" RED " golpear a porta" RST " )", 3);
+            door = input("( bater na porta | pedir ajuda ao velho | golpear a porta )", 3);
         } else if(profissao == 2){ // se for mago, pode usar magia
-            door = input("( bater na porta | pedir ajuda ao velho |" RED " usar magia" RST " )", 3);
+            door = input("( bater na porta | pedir ajuda ao velho | usar magia )", 3);
         } else{
             if(hasKey){
-                door = input("( bater na porta | pedir ajuda ao velho |" RED " usar a chave" RST " )", 3);
+                door = input("( bater na porta | pedir ajuda ao velho | usar a chave )", 3);
             }else{
                 door = input("( bater na porta | pedir ajuda ao velho )", 2);
             }
@@ -274,24 +262,24 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
 
         // bater na porta
         if(door == 1){
-            printf(ITL "Knock, Knock...\n" RST);
+            printf("Knock, Knock...\n");
             doorPassed = jokenpo();
             jokenpoPlayed = 1;
         }else if(door == 3 && profissao == 1){ // golpear a porta
-            printf("Com a espada empunhada, vocÃª golpeia a porta.\n");
+            printf("Com a espada empunhada, você golpeia a porta.\n");
             if(jar == 2){ // derramou a jarra
-                printf("A porta se despedaÃ§a e vocÃª descobre uma escadaria\n");
+                printf("A porta se despedaça e você descobre uma escadaria\n");
                 doorPassed = 2;
-            }else{ // nÃ£o derramou a jarra
+            }else{ // não derramou a jarra
                 doorPassed = jokenpo();
                 jokenpoPlayed = 1;
             }
         }else if(door == 3 && profissao == 2){ // usar magia
-            printf(BLD "\"Bez Organicheniy\"" RST ", vocÃª diz olhando para a porta\n");
+            printf("\"Bez Organicheniy\", você diz olhando para a porta\n");
             if(jar == 2){ // derramou a jarra
                 printf("A porta se abre e revela uma escadaria escura\n");
                 doorPassed = 2;
-            }else{ // nÃ£o derramou a jarra
+            }else{ // não derramou a jarra
                 doorPassed = jokenpo();
                 jokenpoPlayed = 1;
             }
@@ -303,10 +291,10 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
 
     // Evento 4
     printf("\n");
-    printf("Rapidamente vocÃª desce os degraus e chega a uma sala retangular.\n");
+    printf("Rapidamente você desce os degraus e chega a uma sala retangular.\n");
     if(doorPassed == 2){ // se usou a chave, precisa jogar o "jokenpo" dos ejetores
         if(arrow() == 0){ // se perdeu o minigame
-            printf("VocÃª comeÃ§a a sentir o veneno correndo por todo o seu corpo. Ã‰ o fim de sua jornada\n" BLD RED "GAME OVER!" RST);
+            printf("Você começa a sentir o veneno correndo por todo o seu corpo. É o fim de sua jornada\nGAME OVER!\n");
             return 0;
         };
     }
@@ -314,18 +302,18 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
 
 
     // Evento 5
-    printf("HÃ¡ um alÃ§apÃ£o perto dos seus pÃ©s mas estÃ¡ trancado.\n");
-    printf("VocÃª se abaixa e utiliza a chave para abrir.\n");
-    printf("ApÃ³s descer mais alguns lances de escada, vocÃª se encontra em uma grande sala oval.\n");
-    printf("HÃ¡ uma figura no centro, uma estÃ¡tua talvez.\n");
-    printf("VocÃª da alguns passos Ã  frente, na direÃ§Ã£o da estÃ¡tua.\n");
+    printf("Há um alçapão perto dos seus pés mas está trancado.\n");
+    printf("Você se abaixa e utiliza a chave para abrir.\n");
+    printf("Após descer mais alguns lances de escada, você se encontra em uma grande sala oval.\n");
+    printf("Há uma figura no centro, uma estátua talvez.\n");
 
-    printf("A estÃ¡tua diz: \n");
-    printf(ITL "Para passar e receber o tesouro, vocÃª deve responder corretamente trÃªs charadas.\n" RST);
+    printf("Você da alguns passos à frente, na direção da estátua.\n");
+    printf("A estátua diz: \n");
+    printf("Para passar e receber o tesouro, você deve responder corretamente três charadas.\n");
 
-    // trÃªs charadas
+    // três charadas
     for(int i = 0; i<3; i++){
-        // loop para garantir que as charadas nÃ£o sejam repetidas
+        // loop para garantir que as charadas não sejam repetidas
         while(r == riddle1 || r == riddle2){
             r = (rand() % 10) + 1;
         }
@@ -339,13 +327,13 @@ ApÃ³s mais alguns passos vocÃª encontra uma jarra. VocÃª levanta a jarra e perce
 
         // se errar uma charada duas vezes
         if(riddle(r) == 0){
-            printf("O chÃ£o comeÃ§a a tremer. O teto comeÃ§a a desmoronar. Ã‰ o fim de sua jornada\n" BLD RED "GAME OVER!" RST);
+            printf("O chão começa a tremer. O teto começa a desmoronar. É o fim de sua jornada\nGAME OVER!\n");
             return 0;
         }
     }
     
     // Fim do jogo
-    printf("A estÃ¡tua se despedaÃ§a, e debaixo dela hÃ¡ um baÃº. Sua jornada chegou ao fim.\n");
+    printf("A estátua se despedaça, e debaixo dela há um baú. Sua jornada chegou ao fim.\n");
     return 0;
 
 }
@@ -355,44 +343,42 @@ int jokenpo(){
     // declara as variaveis, jogada | random | wins | losses
     int j, r, w=0, l=0;
 
-    printf("Estranhos glifos comeÃ§am a aparecer na porta. VocÃª reconhece alguns. \nParece que a porta quer jogar " GRN "jokenpÃ´" RST ".\n");
-    // melhor de trÃªs
+    printf("Estranhos glifos começam a aparecer na porta. Você reconhece alguns. \nParece que a porta quer jogar jokenpô.\n");
+    // melhor de três
     while(w < 2 && l < 2){ 
         j = input("( pedra | papel | tesoura )", 3);
 
         r = rand() % 3;
         if(r == 0){
-            printf("A porta mostra um glifo semelhante a uma mÃ£o fechada\n");
+            printf("A porta mostra um glifo semelhante a uma mão fechada\n");
         }else if(r == 1){
-            printf("A porta mostra um glifo semelhante a uma mÃ£o aberta\n");
+            printf("A porta mostra um glifo semelhante a uma mão aberta\n");
         }else{
             printf("A porta mostra um glifo semelhante a um sinal de paz e amor\n");
         }
 
         // pedra < papel < tesoura
         if((j - r) % 3 == 2){
-            printf("VocÃª ganhou essa.\n");
+            printf("Você ganhou essa.\n");
             w++;
         }else if(j-1 == r){
             printf("Empate\n");
         }else{
-            printf("VocÃª perdeu dessa vez\n");
+            printf("Você perdeu dessa vez\n");
             l++;
         }
     }
 
     // perdeu o jokenpo
     if(l == 2){
-        printf("A porta nÃ£o tem rosto, mas vocÃª sente que ela estÃ¡ feliz em ter ganhado.\n");
-        enter();
+        printf("A porta não tem rosto, mas você sente que ela está feliz em ter ganhado.\n");
         return 0;
     }
     // ganhou o jokenpo
     else{
-        printf("A porta se abre e revela uma escadaria subterrÃ¢nea.\n");
-        printf("Antes de descer vocÃª percebe algo brilhando em cima do portal.\n");
-        printf(ITL "Uma chave prateada foi adicionada ao seu inventÃ¡rio\n" RST);
-        enter();
+        printf("A porta se abre e revela uma escadaria subterrânea.\n");
+        printf("Antes de descer você percebe algo brilhando em cima do portal.\n");
+        printf("Uma chave prateada foi adicionada ao seu inventário\n");
         return 1;
     }
 }
@@ -401,28 +387,28 @@ int arrow(){
     // declara as variaveis, jogada | random | wins | losses
     int j, r, w=0, l=0;
 
-    printf("A parede oposta contÃ©m 3 buracos alinhados horizontalmente.\n");
-    printf("VocÃª acredita que podem ser uma armadilha.\n");
+    printf("A parede oposta contém 3 buracos alinhados horizontalmente.\n");
+    printf("Você acredita que podem ser uma armadilha.\n");
     while(w < 2 && l <2){
-        j = input("( ficar Ã  direita | ficar no meio | ficar Ã  esquerda )", 3);
+        j = input("( ficar à direita | ficar no meio | ficar à esquerda )", 3);
         r = rand() % 3;
 
         if((j - r) % 3 == 2){
             printf("Do ejetor diretamente a sua frente sai um fragmento de chave.\n");
             w++;
         }else if(j-1 == r){
-            printf("O ejetor diretamente a sua frente nÃ£o Ã© ativado.\n");
+            printf("O ejetor diretamente a sua frente não é ativado.\n");
         }else{
-            printf("Do ejetor diretamente Ã  sua frente sai uma flecha envenada.\n");
+            printf("Do ejetor diretamente à sua frente sai uma flecha envenada.\n");
             l++;
         }
     }
 
     // ganhou
     if(w == 2){ 
-        input("( ficar Ã  direita | ficar no meio | ficar Ã  esquerda )", 3);
-        printf("VocÃª se move, mas Ã© inÃºtil. Com os fragmentos de chave em mÃ£o, a sala parece saber que vocÃª venceu.\n");
-        printf(ITL "Uma chave prateada foi adicionada ao seu inventÃ¡rio\n" RST);
+        input("( ficar à direita | ficar no meio | ficar à esquerda )", 3);
+        printf("Você se move, mas é inútil. Com os fragmentos de chave em mão, a sala parece saber que você venceu.\n");
+        printf("Uma chave prateada foi adicionada ao seu inventário\n");
         return 1;    
     }else{ // perdeu / morreu
         return 0;
@@ -434,35 +420,35 @@ int riddle(int n){
     switch (n)
     {
         case 1:
-            printf("Quatro irmÃ£s estÃ£o em um quarto: Ana estÃ¡ lendo, KÃ¡tia estÃ¡ jogando xadrez, Taca estÃ¡ cozinhando. O que a quarta irmÃ£ estÃ¡ fazendo?\n");
+            printf("Quatro irmãs estão em um quarto: Ana está lendo, Kátia está jogando xadrez, Taca está cozinhando. O que a quarta irmã está fazendo?\n");
             return riddleInput("( matando orcs | forjando uma espada | jogando xadrez )", 3);
         case 2:
-            printf("Um homem estava indo para a Bahia com suas 5 irmÃ£s. Cada irmÃ£ carregava 5 caixas, cada caixa tinha 5 gatos, cada gato estava com 5 filhotes. Quantos estavam indo para a Bahia?\n");
+            printf("Um homem estava indo para a Bahia com suas 5 irmãs. Cada irmã carregava 5 caixas, cada caixa tinha 5 gatos, cada gato estava com 5 filhotes. Quantos estavam indo para a Bahia?\n");
             return riddleInput("( 756 | 781 |  Bahia? )", 1);
         case 3:
-            printf("VocÃª entra em uma sala escura. No quarto hÃ¡ uma estufa Ã  gÃ¡s, uma luminÃ¡ria de querosene e uma vela. HÃ¡ uma caixa de fÃ³sforo com um sÃ³ fÃ³sforo em seu bolso. O que vocÃª acende primeiro.\n");
-            return riddleInput("( luminÃ¡ria | vela | fÃ³sforo )", 3);
+            printf("Você entra em uma sala escura. No quarto há uma estufa à gás, uma luminária de querosene e uma vela. Há uma caixa de fósforo com um só fósforo em seu bolso. O que você acende primeiro.\n");
+            return riddleInput("( luminária | vela | fósforo )", 3);
         case 4:
-            printf("Um empresÃ¡rio comprou um cavalo de 10 moedas e vendeu por 20. Logo comprou o mesmo cavalo por 30 moedas e vendeu por 40. Qual Ã© o lucro total do empresÃ¡rio nessas duas transaÃ§Ãµes?\n");
+            printf("Um empresário comprou um cavalo de 10 moedas e vendeu por 20. Logo comprou o mesmo cavalo por 30 moedas e vendeu por 40. Qual é o lucro total do empresário nessas duas transações?\n");
             return riddleInput("( 10 | 20 | 40 )", 2);
         case 5:
-            printf("Um balÃ£o aerostÃ¡tico Ã© levado por uma corrente de ar atÃ© o sul. Em que direÃ§Ã£o vÃ£o ondular as bandeiras da cesta?\n");
+            printf("Um balão aerostático é levado por uma corrente de ar até o sul. Em que direção vão ondular as bandeiras da cesta?\n");
             return riddleInput("( sul | nenhuma | norte )", 2);
         case 6:
-            printf("Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuÃ­zo do mercante?\n");
+            printf("Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuízo do mercante?\n");
             return riddleInput("( 80 | 20 | 140 )", 1);
         case 7:
-            printf("Dois pais e dois filhos sentaram-se para comer ovos no cafÃ© da manhÃ£. Cada um comeu um ovo. Quantos ovos eles comeram no total?\n");
+            printf("Dois pais e dois filhos sentaram-se para comer ovos no café da manhã. Cada um comeu um ovo. Quantos ovos eles comeram no total?\n");
             return riddleInput("( 1 | 3 | 5 )", 2);
         case 8:
-            printf("Se 3 lenhadores derrubam 3 Ã¡rvores a cada 3 horas, quanto tempo levarÃ£o 100 lenhadores para derrubarem 100 Ã¡rvores?\n");
+            printf("Se 3 lenhadores derrubam 3 árvores a cada 3 horas, quanto tempo levarão 100 lenhadores para derrubarem 100 árvores?\n");
             return riddleInput("( 100 | 3 | 300 )", 2);
         case 9:
-            printf("VocÃª estÃ¡ diante de trÃªs portas. Na primeira hÃ¡ um assassino. Na segunda hÃ¡ um leÃ£o que nÃ£o come hÃ¡ um ano. Na terceira hÃ¡ um incÃªndio. Qual porta Ã© mais segura?\n");
-            return riddleInput("( assassino | leÃ£o | incÃªndio )", 2);
+            printf("Você está diante de três portas. Na primeira há um assassino. Na segunda há um leão que não come há um ano. Na terceira há um incêndio. Qual porta é mais segura?\n");
+            return riddleInput("( assassino | leão | incêndio )", 2);
         case 10:
-            printf("HÃ¡ trÃªs baÃºs, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rÃ³tulos estÃ£o trocados, porÃ©m. VocÃª pode tirar uma moeda de um dos baÃºs para identificar qual baÃº contÃ©m apenas moedas de ouro. De qual baÃº vocÃª retira a moeda?\n");
-            return riddleInput("( sÃ³ ouro | sÃ³ prata | 50/50 )", 3);
+            printf("Há três baús, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rótulos estão trocados, porém. Você pode tirar uma moeda de um dos baús para identificar qual baú contém apenas moedas de ouro. De qual baú você retira a moeda?\n");
+            return riddleInput("( só ouro | só prata | 50/50 )", 3);
     }
 }
 
@@ -475,11 +461,4 @@ int riddleInput(char txt[], int answer){
     }else{
         return 1;
     }
-}
-
-// Pressione qualquer coisa para continuar...
-void enter(){
-    char v;
-    scanf("%c");
-    getchar();
 }
