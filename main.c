@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 
 // faz os acentos funcionarem
 // terminal precisa estar em utf8 também
@@ -97,12 +96,12 @@ int create(){
 
     // Raça: dois primeiros bits
     printf("Raça\n");
-    current_attr = input("( Humano | Anão | Elfo )", 3);
+    current_attr = input("( 1 - Humano | 2 - Anão | 3 - Elfo )", 3);
     character += current_attr;
 
     // Alinhamento: bits 3 e 4 (shift 2)
     printf("Alinhamento\n");
-    current_attr = input("( Mal | Neutro | Bom )", 3);
+    current_attr = input("( 1 - Mal | 2 - Neutro | 3 - Bom )", 3);
     character += current_attr * 4;
 
     // Profissão: bits 5 e 6 (shift 4)
@@ -110,9 +109,9 @@ int create(){
 
     // Se for bom, não pode ser ladino
     if((character >> 2 & 3) == 3){
-        current_attr = input("( Guerreiro | Mago )", 2);
+        current_attr = input("( 1 - Guerreiro | 2 - Mago )", 2);
     }else{
-        current_attr = input("( Guerreiro | Mago | Ladino )", 3);
+        current_attr = input("( 1 - Guerreiro | 2 - Mago | 3 - Ladino )", 3);
     }
     character += current_attr * 16;
 
@@ -120,9 +119,9 @@ int create(){
     printf("Meta\n");
     // Se for mal, não pode destruir o mal
     if((character >> 2 & 1) == 1){
-        current_attr = input("( Governar o reino | Ficar rico )", 2);
+        current_attr = input("( 1 - Governar o reino | 2 - Ficar rico )", 2);
     }else{
-        current_attr = input("( Governar o reino | Ficar rico | Destruir o mal )", 3);
+        current_attr = input("( 1 - Governar o reino | 2 - Ficar rico | 3 - Destruir o mal )", 3);
     }
     character += current_attr * 64;
 
@@ -131,9 +130,9 @@ int create(){
 
     // Se for ladino, não pode ser tribal
     if((character >> 4 & 3) == 3){
-        current_attr = input("( Urbano | Rural )", 2);
+        current_attr = input("( 1 - Urbano | 2 - Rural )", 2);
     }else{
-        current_attr = input("( Urbano | Rural | Tribal )", 3);
+        current_attr = input("( 1 - Urbano | 2 - Rural | 3 - Tribal )", 3);
     }
     character += current_attr * 256;
 
@@ -146,10 +145,10 @@ int create(){
     printf("Porte\n");
     
     // Se for anão, não pode ser grande
-    if((character & 2) == 2){
-        current_attr = input("( Médio | Pequeno )", 2) + 1;
+    if((character & 3) == 2){
+        current_attr = input("( 1 - Médio | 2 - Pequeno )", 2) + 1;
     }else{
-        current_attr = input("( Grande | Médio | Pequeno )", 3);
+        current_attr = input("( 1 - Grande | 2 - Médio | 3 - Pequeno )", 3);
     }
     character += current_attr * 1024;
 
@@ -201,13 +200,13 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
 
         // Se for mal, pode saquear o velho, mas não oferecer ajuda
         if(alinhamento == 1){
-            oldMan = input("( saquear o velho | conversar com o velho )", 2);
+            oldMan = input("( 1 - saquear o velho | 2 - conversar com o velho )", 2);
         }else{
             // Se possui a jarra
             if(jar == 3){
-                oldMan = input("( conversar com o velho | oferecer ajuda ao velho | oferecer a jarra ao velho )", 3) + 1;
+                oldMan = input("( 1 - conversar com o velho | 2 - oferecer ajuda ao velho | 3 - oferecer a jarra ao velho )", 3) + 1;
             }else{
-                oldMan = input("( conversar com o velho | oferecer ajuda ao velho )", 2) + 1;
+                oldMan = input("( 1 - conversar com o velho | 2 - oferecer ajuda ao velho )", 2) + 1;
             }
         }
         
@@ -265,14 +264,23 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
         
         // se for guerreiro, pode golpear a porta
         if(profissao == 1){
-            door = input("( bater na porta | pedir ajuda ao velho | golpear a porta )", 3);
+            if(hasKey){
+                door = input("( 1 - bater na porta | 2 - usar a chave | 3 - golpear a porta )", 3);
+            }else{
+                door = input("( 1 - bater na porta | 2 - pedir ajuda ao velho | 3 - golpear a porta )", 3);
+            }
         } else if(profissao == 2){ // se for mago, pode usar magia
-            door = input("( bater na porta | pedir ajuda ao velho | usar magia )", 3);
+            if(hasKey){
+                door = input("( 1 - bater na porta | 2 - usar a chave | 3 - usar magia )", 3);
+            }else{
+                door = input("( 1 - bater na porta | 2 - pedir ajuda ao velho | 3 - usar magia )", 3);
+            }
+            
         } else{ // ladino
             if(hasKey){
-                door = input("( bater na porta | pedir ajuda ao velho | usar a chave )", 3);
+                door = input("( 1 - bater na porta | 2 - pedir ajuda ao velho | 3 - usar a chave )", 3);
             }else{
-                door = input("( bater na porta | pedir ajuda ao velho )", 2);
+                door = input("( 1 - bater na porta | 2 - pedir ajuda ao velho )", 2);
             }
         }
 
@@ -299,7 +307,7 @@ Após mais alguns passos você encontra uma jarra. Você levanta a jarra e perce
                 doorPassed = jokenpo();
                 jokenpoPlayed = 1;
             }
-        }else if(door == 3 && profissao == 3){ // usar a chave
+        }else if((door == 3 && profissao == 3) || (door == 2 && hasKey == 1 && profissao != 3)){ // usar a chave
             printf("A porta se abre ao inserir a chave na fechadura, e revela uma escadaria escura.\n");
             doorPassed = 2;
         }
@@ -365,7 +373,7 @@ int jokenpo(){
     printf("Estranhos glifos começam a aparecer na porta. Você reconhece alguns. \nParece que a porta quer jogar jokenpô.\n");
     // melhor de três
     while(w < 2 && l < 2){ 
-        j = input("( pedra | papel | tesoura )", 3);
+        j = input("( 1 - pedra | 2 - papel | 3 - tesoura )", 3);
 
         r = rand() % 3;
         if(r == 0){
@@ -411,7 +419,7 @@ int arrow(){
     printf("A parede oposta contém 3 buracos alinhados horizontalmente.\n");
     printf("Você acredita que podem ser uma armadilha.\n");
     while(w < 2 && l <2){
-        j = input("( ficar à direita | ficar no meio | ficar à esquerda )", 3);
+        j = input("( 1 - ficar à direita | 2 - ficar no meio | 3 - ficar à esquerda )", 3);
         r = rand() % 3;
 
         if((j - r) % 3 == 2){
@@ -427,7 +435,7 @@ int arrow(){
 
     // ganhou
     if(w == 2){ 
-        input("( ficar à direita | ficar no meio | ficar à esquerda )", 3);
+        input("( 1 - ficar à direita | 2 - ficar no meio | 3 - ficar à esquerda )", 3);
         printf("Você se move, mas é inútil. Com os fragmentos de chave em mão, a sala parece saber que você venceu.\n");
         printf("Uma chave prateada foi adicionada ao seu inventário\n");
         enter();
@@ -443,34 +451,34 @@ int riddle(int n){
     {
         case 1:
             printf("Quatro irmãs estão em um quarto: Ana está lendo, Kátia está jogando xadrez, Taca está cozinhando. O que a quarta irmã está fazendo?\n");
-            return riddleInput("( matando orcs | forjando uma espada | jogando xadrez )", 3);
+            return riddleInput("( 1 - matando orcs | 2 - forjando uma espada | 3 - jogando xadrez )", 3);
         case 2:
             printf("Um homem estava indo para a Bahia com suas 5 irmãs. Cada irmã carregava 5 caixas, cada caixa tinha 5 gatos, cada gato estava com 5 filhotes. Quantos estavam indo para a Bahia?\n");
-            return riddleInput("( 756 | 781 |  Bahia? )", 1);
+            return riddleInput("( 1 - 756 | 2 - 781 |  3 - Bahia? )", 1);
         case 3:
             printf("Você entra em uma sala escura. No quarto há uma estufa à gás, uma luminária de querosene e uma vela. Há uma caixa de fósforo com um só fósforo em seu bolso. O que você acende primeiro.\n");
-            return riddleInput("( luminária | vela | fósforo )", 3);
+            return riddleInput("( 1 - luminária | 2 - vela | 3 - fósforo )", 3);
         case 4:
             printf("Um empresário comprou um cavalo de 10 moedas e vendeu por 20. Logo comprou o mesmo cavalo por 30 moedas e vendeu por 40. Qual é o lucro total do empresário nessas duas transações?\n");
-            return riddleInput("( 10 | 20 | 40 )", 2);
+            return riddleInput("( 1 - 10 | 2 - 20 | 3 - 40 )", 2);
         case 5:
             printf("Um balão aerostático é levado por uma corrente de ar até o sul. Em que direção vão ondular as bandeiras da cesta?\n");
-            return riddleInput("( sul | nenhuma | norte )", 2);
+            return riddleInput("( 1 - sul | 2 - nenhuma | 3 - norte )", 2);
         case 6:
             printf("Um homem roubou 80 moedas da caixa de um mercante. Mais tarde, usou 60 moedas para comprar uma espada do mercante, usando as moedas que roubou. Qual foi o prejuízo do mercante?\n");
-            return riddleInput("( 80 | 20 | 140 )", 1);
+            return riddleInput("( 1 - 80 | 2 - 20 | 3 - 140 )", 1);
         case 7:
             printf("Dois pais e dois filhos sentaram-se para comer ovos no café da manhã. Cada um comeu um ovo. Quantos ovos eles comeram no total?\n");
-            return riddleInput("( 1 | 3 | 5 )", 2);
+            return riddleInput("( 1 - 1 | 2 - 3 | 3 - 5 )", 2);
         case 8:
             printf("Se 3 lenhadores derrubam 3 árvores a cada 3 horas, quanto tempo levarão 100 lenhadores para derrubarem 100 árvores?\n");
-            return riddleInput("( 100 | 3 | 300 )", 2);
+            return riddleInput("( 1 - 100 | 2 - 3 | 3 - 300 )", 2);
         case 9:
             printf("Você está diante de três portas. Na primeira há um assassino. Na segunda há um leão que não come há um ano. Na terceira há um incêndio. Qual porta é mais segura?\n");
-            return riddleInput("( assassino | leão | incêndio )", 2);
+            return riddleInput("( 1 - assassino | 2 - leão | 3 - incêndio )", 2);
         case 10:
             printf("Há três baús, um contendo 100 moedas de ouro, um contendo 100 moedas de prata, e um contendo 50/50. Os rótulos estão trocados, porém. Você pode tirar uma moeda de um dos baús para identificar qual baú contém apenas moedas de ouro. De qual baú você retira a moeda?\n");
-            return riddleInput("( só ouro | só prata | 50/50 )", 3);
+            return riddleInput("( 1 - só ouro | 2 - só prata | 3 - 50/50 )", 3);
     }
 }
 
